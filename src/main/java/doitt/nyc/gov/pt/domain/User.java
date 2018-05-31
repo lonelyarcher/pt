@@ -4,10 +4,12 @@ import java.io.Serializable;
 import java.security.Principal;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-
-import org.springframework.security.core.GrantedAuthority;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -27,7 +29,13 @@ public class User implements Principal, Serializable{
 	@JsonIgnore
 	private String password;
 	private String email;
-	private Set<? extends GrantedAuthority> roles;
+	
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+	private Set<Role> roles;
+	
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "user_franchise", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "franchise_id", referencedColumnName = "id"))
 	private Set<Franchise> franchises;
 	
 	@Override
